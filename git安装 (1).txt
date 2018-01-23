@@ -1,0 +1,81 @@
+参考这个可以成功
+https://www.cnblogs.com/VseYoung/p/git-2.html
+
+启动docker容器
+docker run -d --name m-gitDemo2 -p 8091:22  -v /d_git:/usr/local/d_git centos-ssh-root
+进入到docker容器中执行下面的操作
+
+1.在服务器端
+1) yum install git-all -y
+2) git --version
+3) 服务器端创建 git 用户，用来管理 Git 服务，并为 git 用户设置密码
+cd /home
+useradd git
+passwd git
+
+4)服务器端创建 Git 仓库
+	cd /home
+	mkdir -p data/git/gittest.git
+	git init --bare data/git/gittest.git
+	cd data/git/
+	chown -R git:git gittest.git/
+
+2.在本地电脑
+ 1）git clone ssh://git@39.106.98.111:8091/home/data/git/gittest.git
+ 当第一次连接到目标 Git 服务器时会得到一个提示：
+		 The authenticity of host '192.168.56.101 (192.168.56.101)' can't be established.
+		RSA key fingerprint is SHA256:Ve6WV/SCA059EqoUOzbFoZdfmMh3B259nigfmvdadqQ.
+		Are you sure you want to continue connecting (yes/no)? 
+ 选择yes
+ 		此时 C:\Users\用户名\.ssh 下会多出一个文件 known_hosts，以后在这台电脑上再次连接目标 Git 服务器时不会再提示上面的语句。
+
+ 2)客户端创建 SSH 公钥和私钥
+  git config --global user.name "zhangjun"
+	git config --global user.email "zhangjun@hebrf"
+	ssh-keygen -t rsa -C "zhangjun@hebrf"
+	将公钥发给管理人员
+	
+3.在服务器上
+ 1)由 AuthorizedKeysFile 得知公钥的存放路径是 .ssh/authorized_keys，实际上是 $Home/.ssh/authorized_keys，由于管理 Git 服务的用户是 git，所以实际存放公钥的路径是 /home/git/.ssh/authorized_keys
+	在 /home/git/ 下创建目录 .ssh
+  	mkdir -p /home/git/.ssh
+  
+ 2)将生成的公钥上传到服务器端
+ cat /usr/local/d_git/id_rsa_zhangjun.pub >> .ssh/authorized_keys
+ 或者执行 
+ cat >> /home/git/.ssh/authorized_keys < /usr/local/d_git/id_rsa_zhangjun.pub
+ 
+ cd /home/git
+ chown -R git:git .ssh
+ chmod 700 .ssh
+ cd .ssh
+ chmod 600 authorized_keys 
+ 
+ 3）服务器端 Git 打开 RSA 认证
+ 进入 /etc/ssh 目录，编辑 sshd_config，打开以下三个配置的注释
+ 	RSAAuthentication yes
+	PubkeyAuthentication yes
+	AuthorizedKeysFile .ssh/authorized_keys
+	
+	UsePAM yes  #原来是no 修改为yes
+ 4)重启sshd
+ /etc/rc.d/init.d/sshd restart
+ 如果提示找不到可以用 whereis sshd 找一下
+ /usr/sbin/sshd restart
+ 
+4.在自己电脑上执行
+	git clone ssh://git@39.106.98.111:8091/home/data/git/gittest.git
+ 
+5.在服务器上执行
+	1）禁止 git 用户 ssh 登录服务器
+	之前在服务器端创建的 git 用户不允许 ssh 登录服务器
+	编辑 /etc/passwd
+	找到：
+		git:x:502:504::/home/git:/bin/bash
+	修改为
+		git:x:502:504::/home/git:/bin/git-shell
+	此时 git 用户可以正常通过 ssh 使用 git，但无法通过 ssh 登录系统。
+ 
+ 
+  
+  

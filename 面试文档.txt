@@ -1,0 +1,46 @@
+
+购物车
+所需技术：后台spring+springMVC+mybatis，前台：easyui，jQuery
+
+基本需要的表商品表Goods、商品品牌GoodsBrand、商品类型GoodsType
+
+
+ShopCarGoods 购物车商品对象
+
+商品对象 Goods
+
+该商品的数量 GoodsCount
+
+该商品的总价 GoodsSumPrice  总价计算：商品对象的单价*商品数量
+--------------------------
+
+ShopCar 
+
+购物车商品集合 ShopCarGoodsList
+
+所有商品总价  GoodsTotalPrice   遍历商品集合求出总价
+
+已有的商品数量 GoodsNumber          
+
+-----------------
+
+使用session存入商品信息及商品数量
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

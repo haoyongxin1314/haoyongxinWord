@@ -1,0 +1,37 @@
+./bin/mysqld --user=mysql --basedir=/usr/local/mysql/ --datadir=/usr/local/mysql/data --socket=/tmp/mysql.sock --initialize
+
+
+A temporary password is generated for root@localhost: INiyu<ydG0%z
+
+rm -rf /etc/my.cnf
+
+cp /usr/local/mysql/support-files/my-default.cnf /etc/my.cnf
+
+cp /usr/local/mysql/support-files/mysql.server /etc/init.d/mysqld
+
+service mysqld start
+
+
+
+ alter user 'root'@'localhost' identified by 'root';
+ 
+ flush privileges;
+ 
+ select host,user,authentication_string from mysql.user;
+ 
+ vPATH=$PATH:$HOME/bin:
+/usr/local/mysql/bin
+ 
+ 
+ PATH=$PATH:$HOME/bin:/usr/local/mysql/bin
+ 
+ grant all privileges on *.* to 'root'@'%' identified by password '*81F5E21E35407D884A6CD4A731AEBFB6AF209E1B';
+ 
+ vi /etc/my.cnf
+ 
+[client]
+default-character-set=utf8
+[mysqld]
+character_set_server = utf8
+
+mysql -h 127.0.0.1 -uroot -p

@@ -1,0 +1,45 @@
+1.centos7临时修改IP、永久修改IP
+http://blog.csdn.net/chunrudikai/article/details/54134989
+https://www.cnblogs.com/yi-meng/p/3214471.html
+
+ifconfig ens33 192.168.1.101 
+注意（ens33）是默认第一个网络接口名称
+
+
+ifconfig ens33 192.168.1.101 
+
+进入这个目录编辑网络接口文件
+/etc/sysconfig/network-scripts
+重启网络
+service network restart
+
+
+2.docker的创建容器的例子
+
+docker run -d -m 4g -p 8082:3306 --name m-mysql5.7  -v /mydockerRepo/mysqldata/:/var/lib/mysql  centos-ssh-root
+docker run -d --privileged=true -m 4g  --name m-tomcatAllyPrm --link  m-mysql5.7:tomysql  -p 8083:8080 -v /d_tomcat:/usr/local/d_tomcat centos-ssh-root
+
+3.git的安装
+yum install git-all
+
+git config --global user.name "zhangjun"
+git config --global user.email "zhangjun@hebrf"
+ssh-keygen -t rsa -C "zhangjun@hebrf"
+
+git clone ssh://git@192.168.17.131:22/usr/local/d_git/data/git/kucun.git
+
+参考这个可以成功
+https://www.cnblogs.com/VseYoung/p/git-2.html
+
+
+sshd_config
+https://segmentfault.com/q/1010000000445726
+
+CentOS7 sshd_config配置内容
+http://blog.csdn.net/moonpure/article/details/54575401
+
+docker run -d --name m-git -p 8082:8080 -v /d_git:/usr/local/d_git crxy/centos-ssh-root-jdk-vi
+/usr/local/d_git/data/git/kucun.git/
+ssh-keygen -t rsa -C "zhangjun@qq.com"
+ssh git@172.17.0.2 'cat >> .ssh/authorized_keys' < /home/git/.ssh/id_rsa.pub
+cat /home/git/.ssh/id_rsa.pub >> .ssh/authorized_keys

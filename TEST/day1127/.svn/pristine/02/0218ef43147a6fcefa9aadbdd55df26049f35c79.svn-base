@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.demo.dao.ShopDao">
+    <select id="getUList" resultType="map">
+        select s.*,p.pname,p.pename from shang s,ping p where s.pid=p.pid
+         <if test="mohu!=null and mohu!=''">
+            and (s.sid like "%${mohu}%" or s.sname like "%${mohu}%")
+         </if>
+         <if test="pids!=null and pids!=''">
+           and s.pid in (${pids})
+         </if>
+         <if test="haveGoods">
+           and s.kucun>0
+         </if>
+          limit #{page.startIndex},#{page.pageSize}
+    </select>
+    <select id="getPingList" resultType="com.example.demo.vo.Ping">
+       select * from ping
+    </select>
+    <select id="getAllCount" resultType="int">
+      select count(1) from shang
+    </select>
+    <insert id="add">
+        insert into jilu(sid,createtime,beforeprice,afterprice,zhangfu) values(#{sid},now(),#{beforeprice},#{afterprice},#{zhangfu})
+    </insert>
+    <update id="updatePrice">
+      update shang set price=#{nowPrice} where sid=#{sid}
+    </update>
+    <select id="getJiluList" resultType="com.example.demo.vo.JiLu">
+        select * from jilu where sid=#{sid}
+    </select>
+</mapper>
